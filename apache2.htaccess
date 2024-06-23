@@ -1,0 +1,22 @@
+# This file can live in your root directory so long as
+# `Override All` is defined in your apache2 config file for that
+# directory.
+#
+# I'm not going into detail about that, but it should be enough
+# to get you started.
+#
+RewriteEngine on
+
+# Is there a better/more efficient way to write this? Probabably,
+# but that would also require me to care. As it stands, "Look for
+# any UA that has one of those strings, but is not going to
+# a URI that contains `robots.txt` or `android_hell`, and
+# instead boot them to `android_hell.php`
+#
+# You may want to change that path to reflect where you installed
+# that page. Also, be careful, because if you don't exclude
+# that path, you wind up putting Apache in a loop.
+#
+RewriteCond %{HTTP_USER_AGENT} (ChatGPT\-User|Google\-Extended|Facebookbot|cohere\-ai|PerplexityBot|anthropic\-ai|ClaudeBot) [NC]
+RewriteCond %{REQUEST_URI} !/(robots|android_hell).* [NC]
+RewriteRule ".*" "/android_hell.php"

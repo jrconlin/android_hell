@@ -1,0 +1,21 @@
+# This is the nginx config. You want to put this in whatever
+# server definition you're using for your site (remember,
+# nginx handles these "first come, first served" so you might
+# want to put it pretty early in the location group.)
+#
+#
+
+server {
+        location ~* (/robots|/android_hell).* {
+                # don't screw with serving the file.
+        }
+        location / {
+                # is there a more efficient way to write this? Probably. PR's welcome.
+                if ($http_user_agent ~* "(ChatGPT\-User|Google\-Extended|Facebookbot|cohere\-ai|PerplexityBot|anthropic\-ai|ClaudeBot|CCBot})"){
+                    rewrite ".*" /"/android_hell";
+                }
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ =404;
+        }
+}
