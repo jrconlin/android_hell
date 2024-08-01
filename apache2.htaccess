@@ -17,6 +17,14 @@ RewriteEngine on
 # that page. Also, be careful, because if you don't exclude
 # that path, you wind up putting Apache in a loop.
 #
-RewriteCond %{HTTP_USER_AGENT} (ChatGPT\-User|Google\-Extended|Facebookbot|cohere\-ai|PerplexityBot|anthropic\-ai|ClaudeBot) [NC]
+# If you're looking for various AI agents, take a look at
+# https://darkvisitors.com/agents
+
+# AI Assistants
+RewriteCond %{HTTP_USER_AGENT} (ChatGPT\-User|Meta\-ExternalFetcher) [NC,OR]
+# AI Data Scrapers
+RewriteCond %{HTTP_USER_AGENT} (Applebot\-Extended|Bytespider|CCBot|ClaudeBot|Diffbot|FacebookBot|Google\-Extended|GPTBot|Meta\-ExternalAgent|omgili|Timpibot) [NC,OR]
+# AI Search Crawlers
+RewriteCond %{HTTP_USER_AGENT} (Amazonbot|Applebot|OAI-SearchBot|PerplexityBot|YouBot) [NC]
 RewriteCond %{REQUEST_URI} !/(robots|android_hell).* [NC]
 RewriteRule ".*" "/android_hell.php"

@@ -5,17 +5,60 @@
 #
 #
 
+# The following section should appear outside of a `server` block
+# From https://darkvisitors.com/agents
+map $http_user_agent $go_to_hell {
+        #AI Assistants
+        "~*ChatGPT\-User"       1;
+        "~*Meta\-ExternalFetcher" 1;
+        #AI Scrapers
+        "~*Applebot\-Extended"  1;
+        "~*Bytespider"          1;
+        "~*CCBot"               1;
+        "~*Claudebot"           1;
+        "~*Diffbot"             1;
+        "~*Facebookbot"         1;
+        "~*Google\-Extended"    1;
+        "~*GPTBot"              1;
+        "~*Meta\-ExternalAgent" 1;
+        "~*omgili"              1;
+        "~*Timibot"             1;
+        #AI Search Crawlers
+        "~*Amazonbot"           1;
+        "~*Applebot"            1;
+        "~*OAI-SearchBot"       1;
+        "~*PerplexityBot"       1;
+        "~*YouBot"              1;
+        #Misc AI
+        "~*cohere\-ai"          1;
+        "~*anthropic\-ai"       1;
+
+        default 0;
+}
+
+#... other bits
+
+# The following items should be included in the "main" server block
+# This is the one that serves up the site content you want to protect
 server {
+        # ...
+
+        # First, give things a chance to do the right thing and pull the
+        # robots.txt file (as well as don't cause a loop trying to serve
+        # `android_hell` )
         location ~* (/robots|/android_hell).* {
                 # don't screw with serving the file.
         }
         location / {
-                # is there a more efficient way to write this? Probably. PR's welcome.
-                if ($http_user_agent ~* "(ChatGPT\-User|Google\-Extended|Facebookbot|cohere\-ai|PerplexityBot|anthropic\-ai|ClaudeBot|CCBot})"){
+
+                # Place this above the paths to whatever files you want to
+                # protect. (nginx serves paths in a "first found, first served"
+                # manner)
+                if ($go_to_hell) {
                     rewrite ".*" /"/android_hell";
                 }
                 # First attempt to serve request as file, then
                 # as directory, then fall back to displaying a 404.
-                try_files $uri $uri/ =404;
+                try_files $uri @proxy;
         }
 }
