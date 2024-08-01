@@ -27,4 +27,4 @@ RewriteCond %{HTTP_USER_AGENT} (Applebot\-Extended|Bytespider|CCBot|ClaudeBot|Di
 # AI Search Crawlers
 RewriteCond %{HTTP_USER_AGENT} (Amazonbot|Applebot|OAI-SearchBot|PerplexityBot|YouBot) [NC]
 RewriteCond %{REQUEST_URI} !/(robots|android_hell).* [NC]
-RewriteRule ".*" "/android_hell.php"
+RewriteRule .* /android_hell.php
